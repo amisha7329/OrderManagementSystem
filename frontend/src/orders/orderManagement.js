@@ -22,7 +22,6 @@ const OrderManagement = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const orders = useSelector((state) => state.order.orders);
-  const filteredOrders = useSelector((state) => state.order.filteredOrders);
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchOrders = async () => {
@@ -38,6 +37,7 @@ const OrderManagement = () => {
 
   useEffect(() => {
     fetchOrders();
+    // eslint-disable-next-line
   }, [dispatch]);
 
   const handleSearch = (event) => {
