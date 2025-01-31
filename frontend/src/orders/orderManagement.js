@@ -17,14 +17,17 @@ import ClearIcon from "@mui/icons-material/Clear";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import BlinkWorxIMG from "../img/blinkworx-img.png";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const OrderManagement = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const orders = useSelector((state) => state.order.orders);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchOrders = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/orders/`
@@ -32,6 +35,8 @@ const OrderManagement = () => {
       dispatch(setOrders(response.data));
     } catch (err) {
       console.error("Error while fetching orders", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,14 +78,35 @@ const OrderManagement = () => {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "left",
             alignItems: "center",
-            mb: 5,
-            gap: 3,
+            mb: 2,
+            gap: 3, 
+            flexWrap: "wrap", 
           }}
         >
-          <img src={BlinkWorxIMG} height={30} alt="BlinkWorx name logo" />
-          <Typography variant="h4" fontWeight="bold" color="#4A3F35">
+          
+          <img
+            src={BlinkWorxIMG}
+            alt="BlinkWorx Logo"
+            style={{
+              height: "30px", 
+              width: "auto",
+              maxWidth: "100%", 
+            }}
+          />
+
+          
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            color="#4A3F35"
+            sx={{
+              fontSize: { xs: "1rem", sm: "1.5rem", md: "1.8rem" }, 
+              whiteSpace: "nowrap", 
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
             Order Management
           </Typography>
         </Box>
@@ -123,8 +149,29 @@ const OrderManagement = () => {
           elevation={4}
           sx={{ p: 3, borderRadius: 3, backgroundColor: "#FFFFFF", mb: 4 }}
         > */}
-        <Box sx={{ borderRadius: 3, backgroundColor: "#FFFFFF", mb: 4 }}>
-          <OrderTable />
+        <Box
+          sx={{
+            borderRadius: 3,
+            backgroundColor: "#FFFFFF",
+            mb: 4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "200px", 
+            width: "100%", 
+          }}
+        >
+          {loading ? (
+            <ScaleLoader
+              color="#5A846A"
+              height={40}
+              width={6}
+              radius={2}
+              margin={4}
+            />
+          ) : (
+            <OrderTable />
+          )}
         </Box>
         {/* </Paper> */}
 

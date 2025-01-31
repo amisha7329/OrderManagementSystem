@@ -18,20 +18,25 @@ import {
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BlinkWorxIMG from "../img/blinkworx-img.png"
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const AddNewOrder = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [orderDescription, setOrderDescription] = useState("");
   const [cart, setCart] = useState(new Set());
+  const [loading, setLoading] = useState(true);
 
   const fetchProducts = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/products/`);
       setProducts(response.data);
     } catch (err) {
       console.error("Error while fetching products", err);
-    }
+    } finally {
+        setLoading(false);
+      }
   };
 
   useEffect(() => {
@@ -93,24 +98,43 @@ const AddNewOrder = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 3,
+            mb: 2,
           }}
         >
           <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "left",
-                      alignItems: "center",
-                      mb: 5,
-                      gap: 3
-          
-                    }}
-                  >
-                      <img src={BlinkWorxIMG} height={30} alt="BlinkWorx name logo"/>
-                    <Typography variant="h4" fontWeight="bold" color="#4A3F35">
-                      Book Your Order
-                    </Typography>
-                  </Box>
+  sx={{
+    display: "flex",
+    alignItems: "center",
+    gap: 2, 
+    flexWrap: "wrap", 
+  }}
+>
+  
+  <img
+    src={BlinkWorxIMG}
+    alt="BlinkWorx Logo"
+    style={{
+      height: "30px", 
+      width: "auto",
+      maxWidth: "100%", 
+    }}
+  />
+
+
+  <Typography
+    variant="h4"
+    fontWeight="bold"
+    color="#4A3F35"
+    sx={{
+      fontSize: { xs: "1rem", sm: "1.5rem", md: "1.8rem" }, 
+      whiteSpace: "nowrap", 
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    }}
+  >
+    Book Your Order
+  </Typography>
+</Box>
           <IconButton>
             <Badge badgeContent={cart.size} color="success" showZero>
               <ShoppingCartIcon sx={{ fontSize: 40, color: "#5A846A" }} />
@@ -140,8 +164,15 @@ const AddNewOrder = () => {
             p: 2,
             borderRadius: 2,
             backgroundColor: "#D6D4CE",
+            minHeight: "200px", 
+            display: loading ? "flex" : "block", 
+            justifyContent: loading ? "center" : "flex-start", 
+            alignItems: loading ? "center" : "stretch", 
           }}
         >
+             {loading ? (
+            <ScaleLoader color="#5A846A" height={40} width={6} radius={2} margin={4} />
+          ) : (
           <List>
             {products.map((product, index) => (
               <Box key={product.id}>
@@ -173,6 +204,7 @@ const AddNewOrder = () => {
               </Box>
             ))}
           </List>
+          )}
         </Paper>
 
         <Box
